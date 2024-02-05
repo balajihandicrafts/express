@@ -127,6 +127,3 @@ app.post("/api/banners", uploadB.fields([
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));  
 app.use("/banners", express.static(path.join(__dirname, "banners")));  
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port `);
-});
