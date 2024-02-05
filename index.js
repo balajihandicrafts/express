@@ -19,29 +19,52 @@ app.use((req, res, next) => {
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: function (req, file, cb) {
-    const fileName = `${req.body.name}_${Date.now()}${path.extname(file.originalname)}`;
+    const fileName = `${req.body.name}_${Date.now()}${path.extname(
+      file.originalname
+    )}`;
     cb(null, fileName);
   },
 });
 
+
+
 const upload = multer({ storage: storage });
 
-// Route to check if the server is running
-app.get("/", (req, res) => {
-  res.send("Server is running!");
-});
 
 app.post("/api/data", upload.array("images", 5), async (req, res) => {
   try {
-    // Extract data from request body
-    const { name, productCode, size, type, weight, price, category } = req.body;
+    const { name, productCode, size, type, weight, price,category } = req.body;
+    // const images = req.files.map((file) => file.filename);
     const images = req.files.map(file => imageUrl + 'uploads/' + file.filename);
-    
-    // Respond with uploaded data
-    res.status(201).json({ name, productCode, size, type, weight, price, category, images });
+    res.status(201).json(name);
 
-    // You can add additional logic here to process the data if needed
+    // Construct form data
+    const formData = {
+      "entry.92753073": name,
+      "entry.664732171": productCode,
+      "entry.1761134485": size,
+      "entry.1307036824": type,
+      "entry.1491419271": weight,
+      "entry.1583285136": price,
+      "entry.1525508689":category,
+      "entry.862511962": images.join(", "), // Convert array to string
+    };
 
+    const formUrl =
+      "https://docs.google.com/forms/d/e/1FAIpQLSdYLcrx-V9f3FFOUDs-ASLCQs-cVnFcPTo9n9hG7n1nKWRAXg/formResponse";
+
+    // Convert formData to URLSearchParams format
+    const params = new URLSearchParams(formData);
+
+    // Send POST request to Google Form
+    await fetch(formUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: params.toString(),
+      mode: "no-cors",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
