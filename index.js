@@ -14,6 +14,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Route to check if the server is running
+app.get("/", (req, res) => {
+  res.send("Server is running!");
+});
+
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: function (req, file, cb) {
