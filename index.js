@@ -28,7 +28,7 @@ const upload = multer({ storage: storage });
 
 // Route to check if the server is running
 app.get("/", (req, res) => {
-  res.send("Server is running!" {PORT});
+  res.send("Server is running!");
 });
 
 app.post("/api/data", upload.array("images", 5), async (req, res) => {
